@@ -7,7 +7,7 @@ export default function Automations() {
       title="Automations"
       description="Set up automated workflows to save time and reduce manual tasks."
       icon={Zap}
-      actionLabel="New Automation"
+      comingSoon
     />
   );
 }

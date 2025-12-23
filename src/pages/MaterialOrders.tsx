@@ -7,7 +7,7 @@ export default function MaterialOrders() {
       title="Material Orders"
       description="Create and track material orders from your signed proposals."
       icon={Package}
-      actionLabel="New Order"
+      comingSoon
     />
   );
 }

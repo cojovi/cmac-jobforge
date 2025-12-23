@@ -3,6 +3,7 @@ import { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
+import { ComingSoonBadge } from "./ComingSoonBadge";
 
 interface PlaceholderPageProps {
   title: string;
@@ -10,9 +11,10 @@ interface PlaceholderPageProps {
   icon: LucideIcon;
   actionLabel?: string;
   onAction?: () => void;
+  comingSoon?: boolean;
 }
 
-export function PlaceholderPage({ title, description, icon: Icon, actionLabel, onAction }: PlaceholderPageProps) {
+export function PlaceholderPage({ title, description, icon: Icon, actionLabel, onAction, comingSoon }: PlaceholderPageProps) {
   const handleAction = () => {
     if (onAction) {
       onAction();
@@ -42,7 +44,9 @@ export function PlaceholderPage({ title, description, icon: Icon, actionLabel, o
             </div>
             <h2 className="text-lg font-semibold text-foreground mb-2">{title}</h2>
             {description && <p className="text-muted-foreground max-w-md">{description}</p>}
-            {actionLabel && (
+            {comingSoon ? (
+              <ComingSoonBadge />
+            ) : actionLabel && (
               <Button className="mt-4 gap-2" onClick={handleAction}>
                 <Plus className="w-4 h-4" />
                 {actionLabel}
