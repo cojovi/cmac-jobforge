@@ -16,32 +16,35 @@ export type Database = {
     Tables: {
       contacts: {
         Row: {
+          address: string | null
           created_at: string
           email: string
           id: string
-          job: string | null
           label: string | null
           name: string
+          notes: string | null
           phone: string | null
           type: string
         }
         Insert: {
+          address?: string | null
           created_at?: string
           email: string
           id?: string
-          job?: string | null
           label?: string | null
           name: string
+          notes?: string | null
           phone?: string | null
           type?: string
         }
         Update: {
+          address?: string | null
           created_at?: string
           email?: string
           id?: string
-          job?: string | null
           label?: string | null
           name?: string
+          notes?: string | null
           phone?: string | null
           type?: string
         }
@@ -261,13 +264,97 @@ export type Database = {
         }
         Relationships: []
       }
+      job_activities: {
+        Row: {
+          body: string | null
+          created_at: string
+          created_by: string | null
+          created_by_name: string | null
+          id: string
+          job_id: string
+          title: string
+          type: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          created_by_name?: string | null
+          id?: string
+          job_id: string
+          title: string
+          type?: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          created_by_name?: string | null
+          id?: string
+          job_id?: string
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_activities_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_tasks: {
+        Row: {
+          assignee: string | null
+          completed: boolean
+          created_at: string
+          due_date: string | null
+          id: string
+          job_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assignee?: string | null
+          completed?: boolean
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          job_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assignee?: string | null
+          completed?: boolean
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          job_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_tasks_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       jobs: {
         Row: {
           address: string
           assignee_initials: string
           assignee_name: string
           created_at: string
+          customer_email: string | null
           customer_name: string
+          customer_phone: string | null
           id: string
           proposal_status: string | null
           status: string
@@ -279,7 +366,9 @@ export type Database = {
           assignee_initials: string
           assignee_name: string
           created_at?: string
+          customer_email?: string | null
           customer_name: string
+          customer_phone?: string | null
           id?: string
           proposal_status?: string | null
           status?: string
@@ -291,7 +380,9 @@ export type Database = {
           assignee_initials?: string
           assignee_name?: string
           created_at?: string
+          customer_email?: string | null
           customer_name?: string
+          customer_phone?: string | null
           id?: string
           proposal_status?: string | null
           status?: string
@@ -299,6 +390,168 @@ export type Database = {
           value?: number
         }
         Relationships: []
+      }
+      proposal_line_items: {
+        Row: {
+          adjustment: number
+          category: string
+          cogs: number
+          created_at: string
+          description: string | null
+          id: string
+          margin_percent: number
+          name: string
+          option_id: string
+          quantity: number
+          sales_tax_percent: number
+          sort_order: number
+          subtotal: number
+          unit_cost: number
+          waste_percent: number
+        }
+        Insert: {
+          adjustment?: number
+          category?: string
+          cogs?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          margin_percent?: number
+          name: string
+          option_id: string
+          quantity?: number
+          sales_tax_percent?: number
+          sort_order?: number
+          subtotal?: number
+          unit_cost?: number
+          waste_percent?: number
+        }
+        Update: {
+          adjustment?: number
+          category?: string
+          cogs?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          margin_percent?: number
+          name?: string
+          option_id?: string
+          quantity?: number
+          sales_tax_percent?: number
+          sort_order?: number
+          subtotal?: number
+          unit_cost?: number
+          waste_percent?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_line_items_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "proposal_options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposal_options: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_selected: boolean
+          name: string
+          proposal_id: string
+          sort_order: number
+          subtotal: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_selected?: boolean
+          name?: string
+          proposal_id: string
+          sort_order?: number
+          subtotal?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_selected?: boolean
+          name?: string
+          proposal_id?: string
+          sort_order?: number
+          subtotal?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_options_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposals: {
+        Row: {
+          contractor_signature: string
+          contractor_signed_at: string | null
+          created_at: string
+          customer_notes: string | null
+          customer_signature: string | null
+          customer_signed_at: string | null
+          id: string
+          job_id: string
+          status: string
+          subtotal: number
+          tax_amount: number
+          title: string
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          contractor_signature?: string
+          contractor_signed_at?: string | null
+          created_at?: string
+          customer_notes?: string | null
+          customer_signature?: string | null
+          customer_signed_at?: string | null
+          id?: string
+          job_id: string
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          title: string
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          contractor_signature?: string
+          contractor_signed_at?: string | null
+          created_at?: string
+          customer_notes?: string | null
+          customer_signature?: string | null
+          customer_signed_at?: string | null
+          id?: string
+          job_id?: string
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          title?: string
+          total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposals_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

@@ -4,14 +4,17 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import Dashboard from "./pages/Dashboard";
 import Jobs from "./pages/Jobs";
+import JobDetail from "./pages/JobDetail";
 import CalendarPage from "./pages/Calendar";
 import Performance from "./pages/Performance";
 import InstantEstimator from "./pages/InstantEstimator";
 import InstantEstimatorDetail from "./pages/InstantEstimatorDetail";
 import Measurements from "./pages/Measurements";
 import Proposals from "./pages/Proposals";
+import ProposalDetail from "./pages/ProposalDetail";
 import MaterialOrders from "./pages/MaterialOrders";
 import WorkOrders from "./pages/WorkOrders";
 import Invoices from "./pages/Invoices";
@@ -69,12 +72,14 @@ const AppRoutes = () => (
     <Route path="/auth" element={<AuthRoute><Auth /></AuthRoute>} />
     <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
     <Route path="/jobs" element={<ProtectedRoute><Jobs /></ProtectedRoute>} />
+    <Route path="/jobs/:id" element={<ProtectedRoute><JobDetail /></ProtectedRoute>} />
     <Route path="/calendar" element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
     <Route path="/performance" element={<ProtectedRoute><Performance /></ProtectedRoute>} />
     <Route path="/instant-estimator" element={<ProtectedRoute><InstantEstimator /></ProtectedRoute>} />
     <Route path="/instant-estimator/:id" element={<ProtectedRoute><InstantEstimatorDetail /></ProtectedRoute>} />
     <Route path="/measurements" element={<ProtectedRoute><Measurements /></ProtectedRoute>} />
     <Route path="/proposals" element={<ProtectedRoute><Proposals /></ProtectedRoute>} />
+    <Route path="/proposals/:id" element={<ProtectedRoute><ProposalDetail /></ProtectedRoute>} />
     <Route path="/material-orders" element={<ProtectedRoute><MaterialOrders /></ProtectedRoute>} />
     <Route path="/work-orders" element={<ProtectedRoute><WorkOrders /></ProtectedRoute>} />
     <Route path="/invoices" element={<ProtectedRoute><Invoices /></ProtectedRoute>} />
@@ -91,15 +96,17 @@ const AppRoutes = () => (
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
+    <ThemeProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

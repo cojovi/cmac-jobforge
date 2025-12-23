@@ -17,6 +17,7 @@ export default function Auth() {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [recoveryLoading, setRecoveryLoading] = useState(false);
+  const [magicLinkLoading, setMagicLinkLoading] = useState(false);
 
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
@@ -66,9 +67,14 @@ export default function Auth() {
       if (isLogin) {
         const { error } = await signIn(cleanedEmail, password);
         if (error) {
+          const description =
+            error.message === "Invalid login credentials"
+              ? `Email or password is incorrect. Please verify the email address (we received: ${cleanedEmail}). If you're unsure, click “Forgot password?” to set a new one.`
+              : error.message;
+
           toast({
             title: "Login failed",
-            description: error.message,
+            description,
             variant: "destructive",
           });
         } else {
@@ -135,6 +141,42 @@ export default function Auth() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleMagicLink = async () => {
+    if (!cleanedEmail) {
+      toast({
+        title: "Enter your email",
+        description: "Type your email address first, then click to send a sign-in link.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setMagicLinkLoading(true);
+    try {
+      const emailRedirectTo = `${window.location.origin}/`;
+      const { error } = await supabase.auth.signInWithOtp({
+        email: cleanedEmail,
+        options: { emailRedirectTo },
+      });
+
+      if (error) {
+        toast({
+          title: "Couldn't send link",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Sign-in link sent",
+        description: "Check your email and open the link to sign in.",
+      });
+    } finally {
+      setMagicLinkLoading(false);
     }
   };
 
@@ -247,6 +289,9 @@ export default function Auth() {
                       required
                       className="h-12"
                       autoComplete="email"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
                     />
                   </div>
 
@@ -276,13 +321,16 @@ export default function Auth() {
                       minLength={6}
                       className="h-12"
                       autoComplete={isLogin ? "current-password" : "new-password"}
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
                     />
                   </div>
 
                   <Button
                     type="submit"
                     className="w-full h-12 text-base"
-                    disabled={loading}
+                    disabled={loading || magicLinkLoading}
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">
@@ -295,6 +343,31 @@ export default function Auth() {
                       "Create Account"
                     )}
                   </Button>
+
+                  {isLogin ? (
+                    <div className="space-y-2">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        className="w-full h-12 text-base"
+                        onClick={handleMagicLink}
+                        disabled={loading || magicLinkLoading}
+                      >
+                        {magicLinkLoading ? (
+                          <span className="flex items-center gap-2">
+                            <span className="w-4 h-4 border-2 border-secondary-foreground/30 border-t-secondary-foreground rounded-full animate-spin" />
+                            Sending...
+                          </span>
+                        ) : (
+                          "Email me a sign-in link"
+                        )}
+                      </Button>
+                      <p className="text-sm text-muted-foreground text-center">
+                        If your account was created in the backend and the password won’t work, use this or
+                        “Forgot password?” to set a new password.
+                      </p>
+                    </div>
+                  ) : null}
 
                   <div className="mt-6 text-center">
                     <span className="text-muted-foreground">

@@ -7,7 +7,7 @@ export default function Catalog() {
       title="Catalog"
       description="Manage your products, materials, and pricing library."
       icon={Tag}
-      actionLabel="Add Product"
+      comingSoon
     />
   );
 }
